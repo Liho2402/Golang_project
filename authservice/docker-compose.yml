@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  authservice:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"  # Map host port 8080 to container port 8080
+    environment:
+      # Database connection details (adjust as necessary)
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: user
+      DB_PASSWORD: password
+      DB_NAME: authdb
+    depends_on:
+      - postgres
+    networks:
+      - authnetwork
+
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: authdb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data  # Persist database data
+    ports:
+      - "5433:5432" # Map host port 5433 to container port 5432 (avoid conflict if you have local postgres)
+    networks:
+      - authnetwork
+
+volumes:
+  postgres_data: # Define the named volume
+
+networks:
+  authnetwork: # Define the network
+    driver: bridge 
