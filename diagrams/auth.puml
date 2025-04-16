@@ -1,0 +1,35 @@
+@startuml 
+
+participant HTTP
+participant "Event Servise" as ES
+database "Postgres" as DB
+
+
+
+HTTP ->>ES: GET booking/auth/register
+note right of HTTP
+    Params:
+    - user_login: string
+    -user_password: string
+
+end note 
+
+ES ->> DB: save user in database
+
+note right of DB
+    Новый пользователь 
+    зерегистрирован
+end note
+
+alt Database query fail
+
+DB ->> ES: User already exist
+
+note left of ES
+    Check params: 
+    user_login
+end note
+end
+
+@enduml
+
